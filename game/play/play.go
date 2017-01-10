@@ -11,9 +11,10 @@ import (
 
 	"image/png"
 
+	"github.com/andreas-jonsson/march/data"
 	"github.com/andreas-jonsson/march/game"
+	"github.com/andreas-jonsson/march/platform"
 	"github.com/andreas-jonsson/march/visual"
-	"github.com/andreas-jonsson/openwar/data"
 )
 
 type playState struct {
@@ -67,6 +68,13 @@ func (s *playState) Exit(to game.GameState) error {
 }
 
 func (s *playState) Update(gctl game.GameControl) error {
+	for event := gctl.PollEvent(); event != nil; event = gctl.PollEvent() {
+		switch event.(type) {
+		case *platform.MouseButtonEvent, *platform.QuitEvent:
+			gctl.Terminate()
+		}
+	}
+
 	s.marcher.BuildGeometry(s.testImage)
 	return nil
 }

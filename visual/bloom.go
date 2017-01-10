@@ -10,6 +10,7 @@ import (
 	"unsafe"
 
 	"github.com/goxjs/gl"
+	"github.com/goxjs/gl/glutil"
 )
 
 type Bloom struct {
@@ -25,6 +26,12 @@ type Bloom struct {
 
 func NewBloom(size image.Point) (*Bloom, error) {
 	b := &Bloom{size: size}
+
+	var err error
+	b.programID, err = glutil.CreateProgram(bloomVertexShaderSrc, bloomFragmentShaderSrc)
+	if err != nil {
+		return nil, err
+	}
 
 	squareVerticesData := []float32{
 		-1, -1,
@@ -107,7 +114,7 @@ func (b *Bloom) Render() {
 	gl.DrawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
 
-var vertexShader = `
+var bloomVertexShaderSrc = `
 	#version 120
 
 	attribute vec4 a_position;
@@ -121,23 +128,20 @@ var vertexShader = `
 	}
 `
 
-var pixelShader = `
+var bloomFragmentShaderSrc = `
 	#version 120
 
-	#define N 4
+	#define N 8
 
 	uniform sampler2D s_texture;
 	varying vec2 v_uv;
 
 	void main()
 	{
-		/*
 		vec3 col = texture2D(s_texture, v_uv, 0).xyz;
 		for (int i = 1; i < N; i++)
 			col += texture2D(s_texture, v_uv, i).xyz;
 
 		gl_FragColor = vec4(col / (N - 1), 1);
-		*/
-		gl_FragColor = vec4(0,1,0,1);
 	}
 `

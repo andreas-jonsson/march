@@ -15,7 +15,7 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const fullscreenFlag = sdl.WINDOW_FULLSCREEN_DESKTOP //sdl.WINDOW_FULLSCREEN
+const fullscreenFlag = sdl.WINDOW_FULLSCREEN //sdl.WINDOW_FULLSCREEN_DESKTOP
 
 type Config func(*sdlRenderer) error
 
@@ -81,6 +81,10 @@ func NewRenderer(configs ...Config) (*sdlRenderer, error) {
 		if err = cfg(&rnd); err != nil {
 			return nil, err
 		}
+	}
+
+	if rnd.config.fullscreen {
+		sdlFlags |= fullscreenFlag
 	}
 
 	if err = sdl.GetDesktopDisplayMode(0, &dm); err != nil {

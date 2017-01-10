@@ -25,6 +25,7 @@ func Entry() {
 	}
 	defer platform.Shutdown()
 
+	//rnd, err := platform.NewRenderer(platform.ConfigWithFullscreen, platform.ConfigWithNoVSync)
 	rnd, err := platform.NewRenderer(platform.ConfigWithDiv(2), platform.ConfigWithNoVSync) //, platform.ConfigWithDebug)
 	if err != nil {
 		log.Panicln(err)
