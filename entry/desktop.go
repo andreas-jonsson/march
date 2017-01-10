@@ -9,6 +9,8 @@ package entry
 
 import (
 	"fmt"
+	"image"
+	"image/color"
 	"log"
 
 	"github.com/andreas-jonsson/march/game"
@@ -28,12 +30,19 @@ func Entry() {
 		log.Panicln(err)
 	}
 	defer rnd.Shutdown()
-
 	platform.LogGLInfo()
 
+	layerSize := image.Rect(0, 0, 160, 90)
+	layers := []*image.Paletted{
+		image.NewPaletted(layerSize, color.Palette{
+			color.RGBA{0, 0, 0, 255},
+			color.RGBA{255, 255, 255, 255},
+		}),
+	}
+
 	states := map[string]game.GameState{
-		"menu": menu.NewMenuState(),
-		"play": play.NewPlayState(),
+		"menu": menu.NewMenuState(layers),
+		"play": play.NewPlayState(layers),
 	}
 
 	g, err := game.NewGame(states)
@@ -55,7 +64,7 @@ func Entry() {
 		}
 
 		_, _, fps := g.Timing()
-		rnd.SetWindowTitle(fmt.Sprintf("Voxbox - %d fps", fps))
+		rnd.SetWindowTitle(fmt.Sprintf("March - %d fps", fps))
 
 		if err := g.Render(); err != nil {
 			log.Panicln(err)

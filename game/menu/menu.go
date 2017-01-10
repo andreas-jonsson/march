@@ -6,14 +6,17 @@
 package menu
 
 import (
+	"image"
+
 	"github.com/andreas-jonsson/march/game"
 )
 
 type menuState struct {
+	layers []*image.Paletted
 }
 
-func NewMenuState() *menuState {
-	return &menuState{}
+func NewMenuState(layers []*image.Paletted) *menuState {
+	return &menuState{layers}
 }
 
 func (s *menuState) Name() string {
