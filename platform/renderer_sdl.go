@@ -15,7 +15,7 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const fulscreenFlag = sdl.WINDOW_FULLSCREEN_DESKTOP //sdl.WINDOW_FULLSCREEN
+const fullscreenFlag = sdl.WINDOW_FULLSCREEN_DESKTOP //sdl.WINDOW_FULLSCREEN
 
 type Config func(*sdlRenderer) error
 
@@ -40,8 +40,8 @@ func ConfigWithDiv(n int) Config {
 	}
 }
 
-func ConfigWithFulscreen(rnd *sdlRenderer) error {
-	rnd.config.fulscreen = true
+func ConfigWithFullscreen(rnd *sdlRenderer) error {
+	rnd.config.fullscreen = true
 	return nil
 }
 
@@ -64,7 +64,7 @@ type sdlRenderer struct {
 		windowSize    image.Point
 		resolutionDiv int
 		debug, novsync,
-		fulscreen bool
+		fullscreen bool
 	}
 }
 
@@ -103,9 +103,6 @@ func NewRenderer(configs ...Config) (*sdlRenderer, error) {
 	sdl.GL_SetAttribute(sdl.GL_RED_SIZE, 8)
 	sdl.GL_SetAttribute(sdl.GL_GREEN_SIZE, 8)
 	sdl.GL_SetAttribute(sdl.GL_BLUE_SIZE, 8)
-	//sdl.GL_SetAttribute(sdl.GL_ALPHA_SIZE, 8)
-	sdl.GL_SetAttribute(sdl.GL_DEPTH_SIZE, 24)
-	//sdl.GL_SetAttribute(sdl.GL_STENCIL_SIZE, 8)
 
 	sdl.GL_SetAttribute(sdl.GL_MULTISAMPLESAMPLES, 4)
 
@@ -117,6 +114,8 @@ func NewRenderer(configs ...Config) (*sdlRenderer, error) {
 	if err != nil {
 		return &rnd, err
 	}
+
+	log.Printf("Window resolution: %dx%d\n", cfg.windowSize.X, cfg.windowSize.Y)
 
 	rnd.glContext, err = sdl.GL_CreateContext(rnd.window)
 	if err != nil {
@@ -136,16 +135,16 @@ func NewRenderer(configs ...Config) (*sdlRenderer, error) {
 }
 
 func (rnd *sdlRenderer) ToggleFullscreen() {
-	isFullscreen := (rnd.window.GetFlags() & fulscreenFlag) != 0
+	isFullscreen := (rnd.window.GetFlags() & fullscreenFlag) != 0
 	if isFullscreen {
 		rnd.window.SetFullscreen(0)
 	} else {
-		rnd.window.SetFullscreen(fulscreenFlag)
+		rnd.window.SetFullscreen(fullscreenFlag)
 	}
 }
 
 func (rnd *sdlRenderer) Clear() {
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
 }
 
 func (rnd *sdlRenderer) Present() {

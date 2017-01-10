@@ -35,10 +35,10 @@ func init() {
 	runtime.LockOSThread()
 
 	if runtime.GOOS == "windows" {
-		ConfigPath = path.Join(os.Getenv("LOCALAPPDATA"), "Voxbox")
+		ConfigPath = path.Join(os.Getenv("LOCALAPPDATA"), "March")
 	} else {
 		if usr, err := user.Current(); err == nil {
-			ConfigPath = path.Join(usr.HomeDir, ".config", "voxbox")
+			ConfigPath = path.Join(usr.HomeDir, ".config", "march")
 		}
 	}
 
